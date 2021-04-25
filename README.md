@@ -7,7 +7,7 @@ From the command line:
 - Clone the repo from GH
 - cd into the new "slcsp_excercise" directory
 - run `bundle install` to install rspec
-- ruby lib/slcsp.rb
+- ruby lib/slcsp_runner.rb
 
 # Running the tests
 From the command line: 

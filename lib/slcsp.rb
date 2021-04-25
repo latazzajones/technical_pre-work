@@ -1,44 +1,42 @@
-#!/usr/bin/env ruby
 require 'csv'
 require 'pry'
 
 class Slcsp
+  attr_accessor :slcsp_csv
 
-  def initialize
+  def initialize(slcsp_csv: './slcsp_csv_files/slcsp.csv')
+    @slcsp_csv = slcsp_csv 
   end
 
   def generate_csv
-    table = CSV.parse(File.read(slcsp_csv), headers: true)
+    puts "zipcode,rate"
 
-    #can converters help here?
-    CSV.open('new_slcsp.csv', 'w') do |new_csv|
-      new_csv << ['zipcode','rate']
-
-      table.each do |row|
-        zipcode = row['zipcode']
-        second_lowest_silver_plan = nil
-
-        rate_areas_for_zip = get_rate_areas(zipcode)
-
-        if rate_areas_for_zip.count > 1
-          rates_for_zip = get_rates_for_zip(rate_areas_for_zip[0])
-          rates = rates_for_zip.select {|row| row["metal_level"] == "Silver"}
-          
-          puts "working on zip #{zipcode}"
-
-          next if rates.count < 2
-          second_lowest_silver_plan = rates.sort_by! {|row| row["rate"]}[1]["rate"].to_f
-        end
-
-        new_csv << [zipcode, second_lowest_silver_plan]
-      end
+    slcsp_table.each do |row|
+      puts "#{row["zipcode"]},#{second_lowest_silver_plan_rate(row["zipcode"])}"
     end
   end
 
   private
 
+  def second_lowest_silver_plan_rate(zipcode)
+    second_lowest_silver_plan = nil
+
+    if get_rate_areas(zipcode).count <= 1
+      rates = get_rates(get_rate_areas(zipcode)[0]).select do |row|
+        row["metal_level"] == "Silver"
+      end
+
+      return nil if rates.count < 2
+      second_lowest_silver_plan = rates.sort_by! {|row| row["rate"]}[1]["rate"].to_f
+    end
+  end
+
+  def slcsp_table
+    CSV.parse(File.read(slcsp_csv), headers: true)
+  end
+
   def get_rate_areas(zipcode)
-    CSV.open('./slcsp_csv_files/zips.csv', headers: true) do |zip|
+    CSV.open(zips_csv, headers: true) do |zip|
       zip_enum = zip.each
 
       zip_enum.select do |row|
@@ -47,7 +45,7 @@ class Slcsp
     end.map {|row| {area: row["rate_area"], state: row["state"]} }
   end
 
-  def get_rates_for_zip(rate_area_for_zip)
+  def get_rates(rate_area_for_zip)
     CSV.open(plans_csv, headers: true) do |plan|
       plan_enum = plan.each
 
@@ -58,15 +56,12 @@ class Slcsp
     end
   end
 
-  def slcsp_csv
-    './slcsp_csv_files/slcsp.csv'
+  def zips_csv
+    './slcsp_csv_files/zips.csv'
   end
 
   def plans_csv
     './slcsp_csv_files/plans.csv'
   end
-
-
 end
 
-Slcsp.new.generate_csv

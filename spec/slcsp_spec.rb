@@ -3,21 +3,32 @@ require 'slcsp'
 
 describe Slcsp do
   context 'the expected cvs is returned' do
-    let(:csv) { Slcsp.new }
-    let(:zip_with_multiple_areas) { "54923" } #it does not return a value/ambiguous
-    let(:zip_with_one_rate) {"40813"} #does not return a value/ambiguous
+    let(:test_csv) { './spec/test_slcsp.csv'}
 
-    let(:results) {csv.generate_csv}
+    let(:subject) { Slcsp.new(slcsp_csv: test_csv) }
+
+    let(:zip_with_multiple_areas) { "54923" }
+    let(:zip_with_one_rate) {"40813"}
+    
+    #let(:stdout) { StringIO.new }
 
     it 'has the expected headers' do
-    end
-
-    it 'includes the slcsp for the expected zipcodes' do
+      #binding.pry
+      #expect{ subject.generate_csv }.to output("zipcode,rate").to_stdout
       pending 'not yet implemented'
     end
 
-    it 'does not include anything for ambiguous zipcodes' do
+    it 'includes the slcsp for the expected zipcodes' do
+      #expect(results[0]["rate"]).to eq ""
+      pending 'not yet implemented'
+    end
+
+    it 'does not include a rate for zipcodes with multiple areas' do
       #zip with more than one rate area
+      pending 'not yet implemented'
+    end
+
+    it 'does not include a rate for zipcodes with only one rate' do
       pending 'not yet implemented'
     end
 
