@@ -11,7 +11,7 @@ From the command line:
 - run `bundle install` to install rspec
 - ruby lib/slcsp_runner.rb
 
-# Running the tests (They're all pending atm)
+# Running the tests
 - run `bundle exec rspec spec/` on the command line
 
 # Next Steps (Needless to say this isn't finished yet 😅 )

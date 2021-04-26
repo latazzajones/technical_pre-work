@@ -10,36 +10,42 @@ describe Slcsp do
     let(:zip_with_multiple_areas) { "54923" }
     let(:zip_with_one_rate) {"40813"}
     
-    #let(:stdout) { StringIO.new }
+    let(:stdout) { StringIO.new }
+
+    before do
+      @old_stdout = $stdout
+      $stdout = stdout
+      subject.generate_csv
+    end
+
+    after { $stdout = @old_stdout }
 
     it 'has the expected headers' do
-      #binding.pry
-      #expect{ subject.generate_csv }.to output("zipcode,rate").to_stdout
-      pending 'not yet implemented'
+      expect($stdout.string).to include "zipcode,rate"
     end
 
     it 'includes the slcsp for the expected zipcodes' do
-      #expect(results[0]["rate"]).to eq ""
-      pending 'not yet implemented'
+      expect($stdout.string).to include "64148,245.2" 
     end
 
     it 'does not include a rate for zipcodes with multiple areas' do
-      #zip with more than one rate area
-      pending 'not yet implemented'
+      expect($stdout.string).to include "54923,\n" 
     end
 
     it 'does not include a rate for zipcodes with only one rate' do
-      pending 'not yet implemented'
+      expect($stdout.string).to include "40813,\n" 
     end
 
   end
 
   context 'the expected csv is NOT returned' do
     it 'fails elegantly' do
+      skip
       pending 'not yet implemented'
     end
 
     it 'returns a helpful error' do
+      skip
       pending 'not yet implemented'
     end
   end
